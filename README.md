@@ -1,2 +1,2 @@
-# cAt-ataxx-engine
-An ataxx engine made in Rust
+# Prismatic - An ataxx engine written entirely in Go
+It also comes with a python version if you like snakes.
