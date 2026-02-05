@@ -1,6 +1,5 @@
 class Board():
-    def __init__(self,fen=None,board_size=7):
-        self.board_size = board_size
+    def __init__(self,fen=None):
         if fen:
             self.toPosition(fen)
         else:
@@ -25,15 +24,15 @@ class Board():
                 continue
             else:
                 raise ValueError("FEN is malformed, aborting program.")
-        if ptr > self.board_size*self.board_size:
+        if ptr > 49:
             raise ValueError("FEN is too long, aborting program.")
 
     def toFEN(self):
         fen = []
-        for row in range(self.board_size):
+        for row in range(7):
             number = 0
-            for col in range(self.board_size):
-                mask = 1<<(row * self.board_size + col)
+            for col in range(7):
+                mask = 1<<(row * 7 + col)
                 if (self.rb&mask):
                     if number:
                         fen.append(str(number))
@@ -49,17 +48,17 @@ class Board():
             if number:
                 fen.append(str(number))
                 number = 0
-            if (row+1)!=self.board_size:
+            if (row+1)!=7:
                 fen.append("/")
         return "".join(fen)
             
             
             
     def printBoard(self):
-        table = [["." for _ in range(self.board_size)] for _ in range(self.board_size)]
-        for row in range(self.board_size):
-            for col in range(self.board_size):
-                mask = 1<<(row*self.board_size+col)
+        table = [["." for _ in range(7)] for _ in range(7)]
+        for row in range(7):
+            for col in range(7):
+                mask = 1<<(row*7+col)
                 if (self.rb&mask)==0 and (self.bb&mask)==0: 
                     continue
                 elif not (self.rb & mask or self.bb & mask):
@@ -72,4 +71,5 @@ class Board():
             print(row)
 
 c = Board()
+c.toPosition("2x4/7/x1x/7/7/7/7")
 c.printBoard()
