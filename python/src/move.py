@@ -108,5 +108,3 @@ def generateMoves(bb,blocked):
         moves.append(jump[ind]&(~blocked))
         bb &= bb-1
     return moves
-
-print(generateMoves(1|1<<48,(1|1<<48|1<<6|1<<42)))
