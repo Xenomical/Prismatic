@@ -1,5 +1,6 @@
 class Board():
-    def __init__(self,fen=None):
+    def __init__(self,fen=None,board_size=7):
+        self.board_size = board_size
         if fen:
             self.toPosition(fen)
         else:
@@ -20,24 +21,55 @@ class Board():
             elif f=="o":
                 self.bb |= 1<<ptr
                 ptr += 1
+            elif f=="/":
+                continue
             else:
-                raise NameError("FEN is malformed, aborting program")
-    def printBoard(self,board_size=7):
-        table = [["." for _ in range(board_size)] for _ in range(board_size)]
-        for row in range(board_size):
-            for col in range(board_size):
-                mask = 1<<(row*board_size+col)
+                raise ValueError("FEN is malformed, aborting program.")
+        if ptr > self.board_size*self.board_size:
+            raise ValueError("FEN is too long, aborting program.")
+
+    def toFEN(self):
+        fen = []
+        for row in range(self.board_size):
+            number = 0
+            for col in range(self.board_size):
+                mask = 1<<(row * self.board_size + col)
+                if (self.rb&mask):
+                    if number:
+                        fen.append(str(number))
+                        number = 0
+                    fen.append("x")
+                elif (self.bb&mask):
+                    if number:
+                        fen.append(str(number))
+                        number = 0
+                    fen.append("o")
+                else:
+                    number += 1
+            if number:
+                fen.append(str(number))
+                number = 0
+            if (row+1)!=self.board_size:
+                fen.append("/")
+        return "".join(fen)
+            
+            
+            
+    def printBoard(self):
+        table = [["." for _ in range(self.board_size)] for _ in range(self.board_size)]
+        for row in range(self.board_size):
+            for col in range(self.board_size):
+                mask = 1<<(row*self.board_size+col)
                 if (self.rb&mask)==0 and (self.bb&mask)==0: 
-                    print(f"Nothing detected at {row},{col}. Putting a '.' in there.")
-                elif (self.rb&mask) and (self.bb&mask):
+                    continue
+                elif not (self.rb & mask or self.bb & mask):
                     raise ValueError("how? like actually, how? You got true on both? How do you expect me to print that dumbass")
                 elif (self.rb&mask):
                     table[row][col] = "x"
-                    print(f"Red Bitboard at {row},{col}. Putting a 'x' in there.")
                 elif (self.bb&mask):
                     table[row][col] = "o"
-                    print(f"Blue Bitboard at {row},{col}. Putting a 'o' in there.")
-        return table
+        for row in table:
+            print(row)
 
 c = Board()
-print(c.printBoard())
+c.printBoard()
