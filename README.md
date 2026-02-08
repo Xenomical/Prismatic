@@ -1,1 +1,1 @@
-# Prismatic - A multilanguage ataxx engine
+# Prismatic
