@@ -3,23 +3,30 @@ class Board():
         if fen:
             self.toPosition(fen)
         else:
-            self.rb = 1|1<<48
+            self.wb = 1|1<<48
             self.bb = 1<<6|1<<42
-        self.std = 1
+            self.blockers = 0
+        self.stm = False 
+        # False - White to move
+        # True - Black to move
 
     def toPosition(self,fen):
-        self.rb = 0
+        self.wb = 0
         self.bb = 0
+        self.blockers = 0
         ptr = 0
         for f in fen:
             if f.isdigit():
                 ptr += int(f)
             elif f=="x":
-                self.rb |= 1<<ptr
+                self.wb |= 1<<ptr
                 ptr += 1
             elif f=="o":
                 self.bb |= 1<<ptr
                 ptr += 1
+            elif f=="-":
+            	self.blockers |= 1<<ptr
+            	ptr+=1
             elif f=="/":
                 continue
             else:
@@ -33,7 +40,7 @@ class Board():
             number = 0
             for col in range(7):
                 mask = 1<<(row * 7 + col)
-                if (self.rb&mask):
+                if (self.wb&mask):
                     if number:
                         fen.append(str(number))
                         number = 0
@@ -43,6 +50,11 @@ class Board():
                         fen.append(str(number))
                         number = 0
                     fen.append("o")
+                elif (self.blockers&mask):
+                	if number:
+                		fen.append(str(number))
+                		number = 0
+                	fen.append("-")
                 else:
                     number += 1
             if number:
@@ -52,6 +64,13 @@ class Board():
                 fen.append("/")
         return "".join(fen)
             
+    def copyBoard(self):
+            child = self.__new__(Board)
+            child.wb = self.wb
+            child.bb = self.bb
+            child.blockers = self.blockers
+            child.stm = self.stm
+            return child
             
             
     def printBoard(self):
@@ -59,17 +78,16 @@ class Board():
         for row in range(7):
             for col in range(7):
                 mask = 1<<(row*7+col)
-                if (self.rb&mask)==0 and (self.bb&mask)==0: 
+                if (self.wb&mask)==0 and (self.bb&mask)==0 and (self.blockers&mask)==0:
                     continue
-                elif not (self.rb & mask or self.bb & mask):
+                elif (self.wb & mask and self.bb & mask):
                     raise ValueError("how? like actually, how? You got true on both? How do you expect me to print that dumbass")
-                elif (self.rb&mask):
+                elif (self.wb&mask):
                     table[row][col] = "x"
                 elif (self.bb&mask):
                     table[row][col] = "o"
+                elif (self.blockers&mask):
+                	table[row][col] = "-"
         for row in table:
             print(row)
-
-c = Board()
-c.toPosition("2x4/7/x1x/7/7/7/7")
-c.printBoard()
+            

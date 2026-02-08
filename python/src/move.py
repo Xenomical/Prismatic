@@ -104,7 +104,15 @@ def generateMoves(bb,blocked):
     moves= []
     while bb:
         ind = (bb & -bb).bit_length() -1
-        moves.append(clone[ind]&(~blocked))
-        moves.append(jump[ind]&(~blocked))
+        c_targets = clone[ind] & ~blocked
+        j_targets = jump[ind] & ~blocked
+        while c_targets:
+          c_ind = (c_targets & -c_targets).bit_length() -1
+          moves.append((ind,c_ind,False))
+          c_targets &= c_targets-1
+        while j_targets:
+          j_ind = (j_targets & -j_targets).bit_length() -1
+          moves.append((ind,j_ind, True))
+          j_targets &= j_targets-1
         bb &= bb-1
     return moves
