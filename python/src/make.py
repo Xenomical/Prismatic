@@ -51,6 +51,7 @@ convert = [
   ]
 
 def makeMove(board, move):
+	undo = (board.wb,board.bb,board.stm)
 	from_sq = move[0]
 	to_sq = move[1]
 	is_jump = move[2]
@@ -77,3 +78,7 @@ def makeMove(board, move):
 		board.bb = player
 		board.wb = enemy
 	board.stm = not board.stm
+	return undo
+	
+def undoMove(board, undo):
+    board.wb, board.bb, board.stm = undo
