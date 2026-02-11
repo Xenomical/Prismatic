@@ -7,8 +7,8 @@ class Board():
             self.bb = 1<<6|1<<42
             self.blockers = 0
         self.stm = False 
-        # False - White to move
-        # True - Black to move
+        # 0 - White to move
+        # 1 - Black to move
 
     def toPosition(self,fen):
         self.wb = 0

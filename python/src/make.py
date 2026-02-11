@@ -77,7 +77,7 @@ def makeMove(board, move):
 	else:
 		board.bb = player
 		board.wb = enemy
-	board.stm = not board.stm
+	board.stm ^1
 	return undo
 	
 def undoMove(board, undo):

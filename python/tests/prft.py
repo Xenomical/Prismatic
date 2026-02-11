@@ -31,10 +31,15 @@ def perft(board, depth):
     return nodes
 		
 c = Board()
-
-for d in range(0,6):
-    start = time.perf_counter()
-    nodes = perft(c, d)
-    end = time.perf_counter()
-    elapsed = end-start
-    print(f"Depth {d}: {nodes} - {'OK' if nodes == correctValues[d] else 'WRONG'} - Time Elapsed: {elapsed}. Nodes per second: {nodes/elapsed}")
+for t in range(1,11):
+    start_test = time.perf_counter()
+    for d in range(t):
+        start = time.perf_counter()
+        nodes = perft(c, d)
+        end = time.perf_counter()
+        elapsed = end-start
+        print(f"Depth {d}: {nodes} - {'OK' if nodes == correctValues[d] else 'WRONG'} - Time Elapsed: {elapsed}. Nodes per second: {nodes/elapsed}")
+    end_test = time.perf_counter()
+    elapsed_test = end_test-start_test
+    print(f"Test {t} finished. Time Elapsed within test: {elapsed_test}")
+input("Press enter to continue...")
